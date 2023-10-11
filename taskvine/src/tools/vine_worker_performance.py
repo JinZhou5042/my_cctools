@@ -26,7 +26,7 @@ def read_fields(f, lines_patience = 10):
 if __name__ == "__main__":
     print("Plotting workers performance...")
 
-    base_dir = "/afs/crc.nd.edu/user/j/jzhou24/scripts/vine-run-info/"
+    base_dir = "/afs/crc.nd.edu/user/j/jzhou24/my_cctools/scripts/vine-run-info/"
     working_dir = sys.argv[1]
     log_dir = os.path.join(base_dir, working_dir, "vine-logs")
     log_file = os.path.join(log_dir, "performance")
@@ -109,6 +109,10 @@ if __name__ == "__main__":
     plt.show()
 
     save_dir = os.path.join(base_dir, "workers_performance")
+
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
     filename = str(num_tasks) + "tasks_" + str(num_workers) + "workers"
     save_file = os.path.join(save_dir, filename)
     plt.savefig(save_file)
