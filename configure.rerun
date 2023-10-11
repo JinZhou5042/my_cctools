@@ -1,0 +1,2 @@
+#!/bin/sh
+./configure --with-base-dir /afs/crc.nd.edu/user/j/jzhou24/miniconda3/envs/cctools-dev --prefix /afs/crc.nd.edu/user/j/jzhou24/miniconda3/envs/cctools-dev

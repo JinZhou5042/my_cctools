@@ -1,0 +1,4 @@
+export vine_logs_path="/afs/crc.nd.edu/user/j/jzhou24/scripts/vine-run-info/most-recent/vine-logs"
+bash run_blast.sh -plot $vine_logs_path
+vine_plot_txn_log $vine_logs_path/transactions $vine_logs_path/txn_log.png
+dot -Tpng $vine_logs_path/taskgraph > $vine_logs_path/dag.png

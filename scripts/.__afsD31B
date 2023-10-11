@@ -1,0 +1,48 @@
+#!/bin/bash
+
+help_info="
+Usage: bash $0 [-opt]
+opt:
+	-h                   print help information
+	-p  <port>           the working port
+	-ql <query_length>   the length of sequence for each query
+	-qc <query_count>    the number of queries for each task
+	-tc <task_count>     the number of tasks in total
+example:
+	bash $0 -p 9123 -ql 4 -qc 10 -tc 100000
+"
+
+while [[ "$#" -gt 0 ]]; do
+	case $1 in
+		-h)
+			printf "%s\n" "$help_info"
+			shift
+			;;
+		-p)
+			port="$2"
+			shift 2
+			;;
+		-ql)
+			ql="$2"
+			shift 2
+			;;
+		-qc)
+			qc="$2"
+			shift 2
+			;;
+		-tc)
+			tc="$2"
+			shift 2
+			;;
+		*)
+			echo "Invalid Option: $1"
+			exit 1
+			;;
+	esac
+done	
+
+
+blast_dir="/afs/crc.nd.edu/user/j/jzhou24/cctools/taskvine/src/examples/"
+blast_path="${blast_dir}vine_example_blast.py"
+echo "port=$port query_length=$ql query_count=$qc task_count=$tc"
+python $blast_path --port $port --query-length $ql --query-count $qc --task-count $tc

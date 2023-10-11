@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+from ndcctools.poncho import package_analyze as analyze
+import argparse
+import ast
+import json
+import sys
+
+HELPMSG = '''Determine the environment required by Python code.
+
+This script must be run from inside an active conda environment.
+If a module is not known by either pip or conda, the user must provide
+the package name with the --pkg-mapping option. It is also an error to import
+anything not managed by pip/conda, including other modules within the CWD
+or in user-written packages'''
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description=HELPMSG)
+    actions = parser.add_mutually_exclusive_group()
+    parser.add_argument('source', nargs='+',
+        help='Analyze the given Python source code, or - for stdin.')
+    parser.add_argument('out',
+        help='Path to write the JSON description, or - for stdout.')
+    actions.add_argument('--toplevel', action='store_true',
+        help='Only include imports at the top level of the script.')
+    actions.add_argument('--function',
+        help='Only include imports in the given function.')
+    parser.add_argument('--pkg-mapping', action='append', metavar='IMPORT=NAME', default=[],
+        help='Specify that the module imported as IMPORT in the code is provided by the pip/conda package NAME.')
+    parser.add_argument('--extra-pkg', action='append', metavar='PKG', default=[],
+        help='Also include the pip/conda package PKG, even if it does not appear in the sources.')
+    args = parser.parse_args()
+
+    analyze.scan_pkgs()
+
+    if args.out == '-':
+        out = sys.stdout
+    else:
+        out = open(args.out, 'w')
+
+    overrides = {}
+    for a in args.pkg_mapping:
+        (i, n) = a.split('=')
+        overrides[i] = n
+
+    imports = []
+    for s in args.source:
+        if s == '-':
+            source = sys.stdin
+            filename = '<stdin>'
+        else:
+            source = open(s, 'r')
+            filename = s
+
+        code = ast.parse(source.read(), filename=filename)
+        if args.toplevel:
+            imports += analyze.analyze_toplevel(code)
+        elif args.function:
+            imports += analyze.analyze_function(code, args.function)
+        else:
+            imports += analyze.analyze_full(code)
+
+    json.dump(analyze.export_env(overrides, imports, args.extra_pkg), out, indent=4, sort_keys=True)
+    out.write('\n')
+
+

@@ -1,0 +1,4 @@
+cctools.test.log
+work_queue_wrap.*
+work_queue.py
+*.so

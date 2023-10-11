@@ -1,0 +1,7 @@
+universe = vanilla
+executable = /afs/crc.nd.edu/user/j/jzhou24/cctools/taskvine/src/examples/vine_example_blast.py
+output = test.output
+should_transfer_files = yes
+when_to_transfer_output = on_exit
+log = test.logfile
+queue

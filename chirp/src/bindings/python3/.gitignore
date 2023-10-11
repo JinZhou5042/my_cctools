@@ -1,0 +1,5 @@
+*.pyc
+*.so
+_cchirp.so
+cchirp.py
+chirp_wrap.*
